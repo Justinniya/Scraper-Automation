@@ -1,0 +1,37 @@
+services:
+  automation-app:
+    build: .
+    ports:
+      - "3000:3000"
+    container_name: automation-express-app
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=test
+    volumes:
+      - ./app:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - wizard_network
+
+  automation_db:
+    image: pgvector/pgvector:0.8.0-pg17
+    container_name: automation_db
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=hjasgd87GHj78jsdsa
+      - POSTGRES_DB=automation
+    volumes:
+      - postgres_automation_db:/var/lib/postgresql/data
+      - ./backups:/backups
+    ports:
+      - "5432:5432"
+    restart: always
+    networks:
+      - wizard_network
+
+volumes:
+  postgres_automation_db:
+
+networks:
+  wizard_network:
+    external: true
